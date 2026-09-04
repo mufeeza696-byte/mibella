@@ -61,8 +61,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#collections" className="hover:text-[#6B1E2D] transition-colors">
-                  Signature Collections
+                <Link href="/catalog" className="hover:text-[#6B1E2D] transition-colors font-medium">
+                  Curated Catalog & Gifts
                 </Link>
               </li>
               <li>

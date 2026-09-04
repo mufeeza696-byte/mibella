@@ -25,7 +25,7 @@ export function Navbar() {
               className="hover:text-[#822436] transition-colors flex items-center gap-1.5"
             >
               <Gift className="h-3.5 w-3.5" />
-              Customize Gift Box
+              Customize Box
             </Link>
             <Link
               href="/#customizer-section"
@@ -34,8 +34,8 @@ export function Navbar() {
               <Flower2 className="h-3.5 w-3.5" />
               Customize Bouquet
             </Link>
-            <Link href="/#collections" className="hover:text-[#822436] transition-colors">
-              Collections
+            <Link href="/catalog" className="hover:text-[#822436] transition-colors font-bold text-[#6B1E2D]">
+              Catalog
             </Link>
             <Link href="/faq" className="hover:text-[#822436] transition-colors">
               FAQ
@@ -78,6 +78,25 @@ export function Navbar() {
               </Button>
             </Link>
           </div>
+        </div>
+
+        {/* Mobile Quick Navigation Bar */}
+        <div className="lg:hidden flex items-center justify-around py-2.5 px-3 border-t border-[#E0CEB7]/60 text-[11px] uppercase tracking-wider font-semibold bg-[#F8F1E7]/70 overflow-x-auto gap-4 scrollbar-none">
+          <Link href="/#customizer-section" className="hover:text-[#822436] shrink-0">
+            Custom Box
+          </Link>
+          <Link href="/#customizer-section" className="hover:text-[#822436] shrink-0">
+            Bouquet
+          </Link>
+          <Link href="/catalog" className="text-[#6B1E2D] font-bold shrink-0">
+            Catalog
+          </Link>
+          <Link href="/faq" className="text-[#8C3A4B] shrink-0">
+            FAQ
+          </Link>
+          <Link href="/contact" className="text-[#8C3A4B] shrink-0">
+            Contact
+          </Link>
         </div>
       </header>
     </>

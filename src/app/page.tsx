@@ -39,388 +39,18 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Footer } from "@/components/footer";
-
-// ==========================================
-// 1. DATA MODELS FOR GIFT BOXES (PKR)
-// ==========================================
-interface CustomBoxItem {
-  id: string;
-  name: string;
-  category: string;
-  pricePkr: number;
-  tag: string;
-  description: string;
-}
-
-const BOX_STYLES = [
-  {
-    id: "box-blush",
-    name: "Atelier Blush Keepsake Chest",
-    size: "Medium (Fits 4-5 items)",
-    pricePkr: 2800,
-    colorHex: "#E8D8C3",
-    badge: "Most Popular",
-  },
-  {
-    id: "box-noir",
-    name: "Burgundy Velvet Prestige Box",
-    size: "Large (Fits 6-7 items)",
-    pricePkr: 3800,
-    colorHex: "#6B1E2D",
-    badge: "Signature",
-  },
-  {
-    id: "box-cream",
-    name: "Ivory Linen Round Hatbox",
-    size: "Grande (Fits 5-6 items)",
-    pricePkr: 3200,
-    colorHex: "#F8F1E7",
-    badge: "Deluxe",
-  },
-];
-
-const SAMPLE_BOX_ITEMS: CustomBoxItem[] = [
-  // Jewelry
-  {
-    id: "item-jhumka",
-    name: "Traditional Handcrafted Jhumkay",
-    category: "Jewelry",
-    pricePkr: 1250,
-    tag: "Traditional",
-    description: "Classic ethnic dangling jhumkay with delicate pearl droplets.",
-  },
-  {
-    id: "item-pendant",
-    name: "Delicate Minimalist Pendant",
-    category: "Jewelry",
-    pricePkr: 1450,
-    tag: "Gold Finish",
-    description: "Fine chain necklace with polished solitaire crystal pendant.",
-  },
-  {
-    id: "item-tulip-bracelet",
-    name: "Enamel Tulip Charm Bracelet",
-    category: "Jewelry",
-    pricePkr: 950,
-    tag: "Trending",
-    description: "Pastel enamel floral tulip link chain charm bracelet.",
-  },
-  {
-    id: "item-earrings",
-    name: "Sparkling Crystal Floral Earrings",
-    category: "Jewelry",
-    pricePkr: 850,
-    tag: "Delicate",
-    description: "Shimmering cubic zirconia floral stud earrings.",
-  },
-  {
-    id: "item-bangles",
-    name: "Festive Velvet & Metal Bangles Set",
-    category: "Jewelry",
-    pricePkr: 1150,
-    tag: "Festive",
-    description: "Rich matching bangles set with gold metallic accents.",
-  },
-  {
-    id: "item-hair-clip",
-    name: "Pearl & Crystal Hair Barrette Clip",
-    category: "Jewelry",
-    pricePkr: 450,
-    tag: "Accessory",
-    description: "Handcrafted faux pearl and crystal hair accent clip.",
-  },
-  {
-    id: "item-hair-claw",
-    name: "Aesthetic Matte French Hair Claw",
-    category: "Jewelry",
-    pricePkr: 550,
-    tag: "Accessory",
-    description: "Strong-grip aesthetic claw clip in pastel neutral finish.",
-  },
-  {
-    id: "item-choker-set",
-    name: "Regal Velvet & Pearl Choker Set",
-    category: "Jewelry",
-    pricePkr: 2450,
-    tag: "Statement",
-    description: "Intricate choker necklace with matching festive drop earrings.",
-  },
-
-  // Crochet
-  {
-    id: "item-crochet-keychain",
-    name: "Handmade Crochet Flower Keychain",
-    category: "Crochet",
-    pricePkr: 750,
-    tag: "Handmade",
-    description: "Artisanal crochet woven floral bud charm with gold key ring.",
-  },
-  {
-    id: "item-crochet-gajra",
-    name: "Handmade Crochet Wrist Gajra",
-    category: "Crochet",
-    pricePkr: 950,
-    tag: "Handcrafted",
-    description: "Traditional wrist gajra lovingly hand-knitted with soft yarn.",
-  },
-
-  // Coffee Cup & Snacks
-  {
-    id: "item-coffee-cup",
-    name: "Aesthetic Ceramic Coffee Cup",
-    category: "Coffee Cup & Snacks",
-    pricePkr: 1450,
-    tag: "Stoneware",
-    description: "Kiln-glazed speckled ceramic mug with smooth ergonomic handle.",
-  },
-  {
-    id: "item-lays",
-    name: "Crispy Salted Lays Potato Crisps",
-    category: "Coffee Cup & Snacks",
-    pricePkr: 350,
-    tag: "Crunchy",
-    description: "Classic golden wavy salted potato crisps pack.",
-  },
-  {
-    id: "item-chocolate",
-    name: "Gourmet Chocolates Selection",
-    category: "Coffee Cup & Snacks",
-    pricePkr: 950,
-    tag: "Indulgence",
-    description: "Assortment of rich dairy milk and hazelnut gourmet chocolates.",
-  },
-
-  // Scented Candle
-  {
-    id: "item-scented-candle",
-    name: "Rose & Vanilla Scented Soy Candle",
-    category: "Scented Candle",
-    pricePkr: 1650,
-    tag: "Aromatherapy",
-    description: "Hand-poured 100% natural botanical wax candle with wooden wick.",
-  },
-
-  // Makeup
-  {
-    id: "item-eyeshadow",
-    name: "9-Pan Rose & Nude Eyeshadow Palette",
-    category: "Makeup",
-    pricePkr: 1850,
-    tag: "Glam",
-    description: "Velvety matte and metallic shimmer wearable everyday shades.",
-  },
-  {
-    id: "item-lipstick",
-    name: "Velvet Matte Moisture Lipstick",
-    category: "Makeup",
-    pricePkr: 1250,
-    tag: "Long-Wear",
-    description: "Richly pigmented hydrating nude matte lipstick.",
-  },
-  {
-    id: "item-lip-gloss",
-    name: "Crystal Glass Shine Lip Gloss",
-    category: "Makeup",
-    pricePkr: 950,
-    tag: "Plumping",
-    description: "Non-sticky high-shine moisturizing crystal lip lacquer.",
-  },
-  {
-    id: "item-mascara-lip-pencil",
-    name: "Mascara & Lip Pencil Duo",
-    category: "Makeup",
-    pricePkr: 1200,
-    tag: "Duo Essential",
-    description: "Volumizing lash mascara paired with defining contour lip pencil.",
-  },
-  {
-    id: "item-eyeliner",
-    name: "Precision Waterproof Matte Eyeliner",
-    category: "Makeup",
-    pricePkr: 850,
-    tag: "Smudge-Proof",
-    description: "Ultra-fine tip intense black waterproof liquid eyeliner pen.",
-  },
-  {
-    id: "item-highlighter",
-    name: "Champagne Strobe Baked Highlighter",
-    category: "Makeup",
-    pricePkr: 1350,
-    tag: "Radiant",
-    description: "Illuminating pressed powder highlighter for instant dewy glow.",
-  },
-  {
-    id: "item-nail",
-    name: "Glossy Pastel Nail Polish & Kit",
-    category: "Makeup",
-    pricePkr: 650,
-    tag: "Salon Finish",
-    description: "Quick-dry chip-resistant glossy pastel nail lacquer.",
-  },
-  {
-    id: "item-blush",
-    name: "Silky Petal Peach Powder Blush",
-    category: "Makeup",
-    pricePkr: 1150,
-    tag: "Soft Glow",
-    description: "Finely milled blendable powder blush for healthy natural flush.",
-  },
-];
-
-// ==========================================
-// 2. DATA MODELS FOR BOUQUETS (PKR)
-// ==========================================
-interface FlowerStem {
-  id: string;
-  name: string;
-  origin: string;
-  stemsCount: string;
-  pricePkr: number;
-  colorTone: string;
-}
-
-const BOUQUET_FLOWERS: FlowerStem[] = [
-  {
-    id: "flower-1",
-    name: "Imported Red Naomi Roses",
-    origin: "Ecuadorian Stems",
-    stemsCount: "12 Long Stems",
-    pricePkr: 4800,
-    colorTone: "Deep Crimson",
-  },
-  {
-    id: "flower-2",
-    name: "Garden Peonies & Ranunculus",
-    origin: "Dutch Garden",
-    stemsCount: "10 Premium Stems",
-    pricePkr: 5600,
-    colorTone: "Blush & Ivory",
-  },
-  {
-    id: "flower-3",
-    name: "Pure White Oriental Lilies",
-    origin: "Fresh Cut Farm",
-    stemsCount: "6 Fragrant Stems",
-    pricePkr: 3900,
-    colorTone: "Snow White",
-  },
-  {
-    id: "flower-4",
-    name: "Pastel Spring Tulips",
-    origin: "Holland Stems",
-    stemsCount: "15 Fresh Stems",
-    pricePkr: 4500,
-    colorTone: "Peach & Lilac",
-  },
-  {
-    id: "flower-5",
-    name: "Eucalyptus & Baby's Breath",
-    origin: "Lush Filler",
-    stemsCount: "Generous Bunch",
-    pricePkr: 1600,
-    colorTone: "Sage Green & White",
-  },
-];
-
-const BOUQUET_WRAPPINGS = [
-  {
-    id: "wrap-1",
-    name: "Korean Frosted Matte Paper",
-    finish: "Waterproof luxury soft-touch paper",
-    pricePkr: 850,
-  },
-  {
-    id: "wrap-2",
-    name: "Vintage French Kraft Wrap",
-    finish: "Organic textured ribbed paper",
-    pricePkr: 650,
-  },
-  {
-    id: "wrap-3",
-    name: "Burgundy Velvet Elegance Wrap",
-    finish: "Ultra-rich double lined fabric finish",
-    pricePkr: 950,
-  },
-];
-
-const BOUQUET_RIBBONS = [
-  { id: "rib-1", name: "Silk Satin Ribbon Tie", pricePkr: 450 },
-  { id: "rib-2", name: "Heavy French Velvet Ribbon", pricePkr: 750 },
-  { id: "rib-3", name: "Gold Foil Monogram Ribbon", pricePkr: 900 },
-];
-
-const BOUQUET_ADDONS = [
-  { id: "add-1", name: "Box of 8 Ferrero Rocher", pricePkr: 1850, tag: "Sweets" },
-  { id: "add-2", name: "Plush Cream Teddy Keepsake", pricePkr: 1450, tag: "Keepsake" },
-  { id: "add-3", name: "Gold Acrylic 'Happy Birthday' Topper", pricePkr: 650, tag: "Accent" },
-  { id: "add-4", name: "Mini French Botanical Mist (30ml)", pricePkr: 2200, tag: "Scent" },
-];
-
-// ==========================================
-// 3. CURATED SIGNATURE COLLECTIONS (PKR)
-// ==========================================
-const SIGNATURE_COLLECTIONS = [
-  {
-    id: "col-1",
-    title: "The Velvet Rose & Santal Suite",
-    type: "Bespoke Gift Box",
-    pricePkr: 14500,
-    tag: "Valentine's & Anniversaries",
-    itemsCount: "5 Curated Luxuries",
-    includes: ["Preserved Crimson Rose", "French Santal Candle", "Belgian Truffles", "Silk Ribbons", "Calligraphy Card"],
-    bgAccent: "from-[#6B1E2D]/15 to-[#E8D8C3]/40",
-  },
-  {
-    id: "col-2",
-    title: "The Parisian Morning Blossom",
-    type: "Handcrafted Bouquet",
-    pricePkr: 8200,
-    tag: "Fresh Stems",
-    itemsCount: "18 Artisanal Stems",
-    includes: ["Garden Peonies", "Blush Ranunculus", "Eucalyptus", "Korean Frosted Wrap", "Satin Bow"],
-    bgAccent: "from-[#F8F1E7] to-[#E8D8C3]/70",
-  },
-  {
-    id: "col-3",
-    title: "Golden Hour Spa & Serenity",
-    type: "Wellness Gift Box",
-    pricePkr: 12800,
-    tag: "Self-Care & Birthday",
-    itemsCount: "6 Artisanal Keepsakes",
-    includes: ["Mulberry Silk Mask", "Botanical Bath Soak", "Soy Candle", "Gold Tea Strainer", "Ceramic Mug"],
-    bgAccent: "from-[#E8D8C3]/50 to-[#F3E7D3]",
-  },
-  {
-    id: "col-4",
-    title: "Crimson Passion Grand Bouquet",
-    type: "Handcrafted Bouquet",
-    pricePkr: 9900,
-    tag: "Signature Florals",
-    itemsCount: "24 Long Stems",
-    includes: ["24 Red Naomi Roses", "Baby's Breath Accent", "Burgundy Velvet Wrap", "Gold Crest Tag"],
-    bgAccent: "from-[#6B1E2D]/20 to-[#F8F1E7]",
-  },
-  {
-    id: "col-5",
-    title: "The Ivory Hatbox & Truffle Hamper",
-    type: "Bespoke Gift Box",
-    pricePkr: 16500,
-    tag: "Deluxe Luxury",
-    itemsCount: "7 Curated Luxuries",
-    includes: ["Ivory Linen Hatbox", "Belgian Truffles", "Silk Pillowcase", "Rose Candle", "Calligraphy Card"],
-    bgAccent: "from-[#F8F1E7] to-[#E8D8C3]",
-  },
-  {
-    id: "col-6",
-    title: "Pastel Symphony Garden Bouquet",
-    type: "Handcrafted Bouquet",
-    pricePkr: 7800,
-    tag: "Seasonal Fresh",
-    itemsCount: "16 Stems",
-    includes: ["White Oriental Lilies", "Pastel Dutch Tulips", "Seeded Eucalyptus", "Kraft Wrap"],
-    bgAccent: "from-[#E8D8C3]/30 to-[#F8F1E7]",
-  },
-];
+import { Navbar } from "@/components/navbar";
+import {
+  SAMPLE_BOX_ITEMS,
+  BOX_STYLES,
+  BOUQUET_FLOWERS,
+  BOUQUET_WRAPPINGS,
+  BOUQUET_RIBBONS,
+  BOUQUET_ADDONS,
+  SIGNATURE_COLLECTIONS,
+  CustomBoxItem,
+  FlowerStem,
+} from "@/lib/catalog-data";
 
 export default function HomePage() {
   // Mode selection: "box" or "bouquet"
@@ -517,91 +147,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#F3E7D3] text-[#6B1E2D]">
-      {/* Top Luxury Announcement Bar */}
-      <div className="bg-[#6B1E2D] text-[#F8F1E7] px-4 py-2.5 text-xs font-medium tracking-widest text-center uppercase flex items-center justify-center gap-2 border-b border-[#501521]">
-        <Sparkles className="h-3.5 w-3.5 text-[#C5A880]" />
-        <span>Complimentary Handwritten Calligraphy & Wax-Sealed Card on orders over Rs. 5,000</span>
-        <span className="hidden md:inline">• Same-Day Hand Delivery in Lahore, Karachi & Islamabad</span>
-      </div>
-
-      {/* Main Luxury Header Navigation */}
-      <header className="sticky top-0 z-40 bg-[#F3E7D3]/90 backdrop-blur-md border-b border-[#E0CEB7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          {/* Left Navigation: Distinct entry points */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest font-semibold">
-            <button
-              onClick={() => scrollToCustomizer("box")}
-              className="hover:text-[#822436] transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <Gift className="h-3.5 w-3.5" />
-              Customize Gift Box
-            </button>
-            <button
-              onClick={() => scrollToCustomizer("bouquet")}
-              className="hover:text-[#822436] transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <Flower2 className="h-3.5 w-3.5" />
-              Customize Bouquet
-            </button>
-            <a href="#collections" className="hover:text-[#822436] transition-colors">
-              Collections
-            </a>
-            <Link href="/faq" className="hover:text-[#822436] transition-colors">
-              FAQ
-            </Link>
-            <Link href="/contact" className="hover:text-[#822436] transition-colors">
-              Contact
-            </Link>
-          </nav>
-
-          {/* Central Luxury Brand Emblem */}
-          <div className="text-center">
-            <Link href="/" className="inline-block group">
-              <span className="font-serif text-3xl sm:text-4xl tracking-[0.25em] font-medium text-[#6B1E2D] group-hover:text-[#822436] transition-colors">
-                MIBELLA
-              </span>
-              <span className="block text-[9px] uppercase tracking-[0.4em] text-[#8C3A4B] font-sans -mt-1 font-semibold">
-                Custom Boxes & Bouquets
-              </span>
-            </Link>
-          </div>
-
-          {/* Right Action Utilities */}
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-1 text-xs font-semibold text-[#8C3A4B] bg-[#E8D8C3]/50 px-3 py-1 rounded-full border border-[#E0CEB7]">
-              <span>PKR (Rs.)</span>
-            </div>
-
-            <button
-              aria-label="Search items"
-              className="p-2 rounded-full text-[#6B1E2D] hover:bg-[#E8D8C3] transition-colors"
-            >
-              <Search className="h-5 w-5" />
-            </button>
-
-            <Link
-              href="/auth"
-              aria-label="User Account"
-              className="p-2 rounded-full text-[#6B1E2D] hover:bg-[#E8D8C3] transition-colors"
-            >
-              <User className="h-5 w-5" />
-            </Link>
-
-            <Button
-              variant="default"
-              size="sm"
-              className="relative flex items-center gap-2"
-              onClick={() => setIsOrderModalOpen(true)}
-            >
-              <ShoppingBag className="h-4 w-4" />
-              <span className="hidden sm:inline">Bag</span>
-              <span className="bg-[#C5A880] text-[#501521] text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                1
-              </span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 border-b border-[#E0CEB7]">
@@ -647,6 +193,16 @@ export default function HomePage() {
               <Flower2 className="h-4 w-4 mr-1 text-[#6B1E2D]" />
               Customize Bouquet
             </Button>
+          </div>
+
+          <div className="mt-5 flex items-center justify-center gap-2 text-xs text-[#8C3A4B]">
+            <span>Looking for ready-to-ship gifts or standalone treats?</span>
+            <Link
+              href="/catalog"
+              className="font-semibold text-[#6B1E2D] hover:text-[#822436] underline underline-offset-4 flex items-center gap-1"
+            >
+              Browse Complete Catalog <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
 
           {/* DUAL ATELIER FEATURE CARDS */}
@@ -1475,10 +1031,10 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {SIGNATURE_COLLECTIONS.map((col) => (
+            {SIGNATURE_COLLECTIONS.slice(0, 3).map((col) => (
               <Card
                 key={col.id}
-                className="overflow-hidden hover:shadow-lg transition-all duration-300 border-[#E0CEB7] flex flex-col justify-between"
+                className="overflow-hidden hover:shadow-lg transition-all duration-300 border-[#E0CEB7] flex flex-col justify-between bg-[#F8F1E7]/80"
               >
                 <div>
                   <div className={`h-48 bg-gradient-to-br ${col.bgAccent} p-6 flex flex-col justify-between border-b border-[#E0CEB7]/60`}>
@@ -1532,6 +1088,30 @@ export default function HomePage() {
                 </div>
               </Card>
             ))}
+          </div>
+
+          {/* Dedicated Catalog Teaser Banner */}
+          <div className="mt-12 p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-[#6B1E2D] to-[#822436] text-[#F8F1E7] border border-[#501521] flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-2 text-center md:text-left">
+              <Badge variant="gold" className="text-[10px] tracking-widest uppercase">
+                THE COMPLETE ATELIER
+              </Badge>
+              <h3 className="font-serif text-2xl sm:text-3xl font-medium">
+                Looking for More Varieties, Jewelry & Keepsakes?
+              </h3>
+              <p className="text-xs sm:text-sm text-[#E8D8C3] max-w-xl">
+                Browse our dedicated catalog page featuring all 25+ artisanal items, Kundan jewelry, handmade crochet gajras, scented candles, and luxury bouquets with live search and category filters.
+              </p>
+            </div>
+            <Link href="/catalog" className="shrink-0 w-full md:w-auto">
+              <Button
+                variant="secondary"
+                size="lg"
+                className="w-full md:w-auto text-xs font-semibold uppercase tracking-widest px-8 py-6 shadow-md hover:bg-white"
+              >
+                Explore Full Catalog (25+ Luxuries) →
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
