@@ -23,6 +23,8 @@ import {
   Ribbon,
   Truck,
   MapPin,
+  Camera,
+  ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -78,69 +80,190 @@ const BOX_STYLES = [
 ];
 
 const SAMPLE_BOX_ITEMS: CustomBoxItem[] = [
+  // Jewelry
   {
-    id: "item-1",
-    name: "Artisan Belgian Praline Truffles",
-    category: "Sweets",
-    pricePkr: 1850,
-    tag: "Gourmet",
-    description: "Handcrafted dark chocolate ganache infused with sea salt caramel.",
+    id: "item-jhumka",
+    name: "Traditional Handcrafted Jhumkay",
+    category: "Jewelry",
+    pricePkr: 1250,
+    tag: "Traditional",
+    description: "Classic ethnic dangling jhumkay with delicate pearl droplets.",
   },
   {
-    id: "item-2",
-    name: "French Rose & Santal Soy Candle",
-    category: "Fragrance",
-    pricePkr: 2600,
-    tag: "Best Seller",
-    description: "Hand-poured 100% natural botanical wax with wooden wick.",
-  },
-  {
-    id: "item-3",
-    name: "Mulberry Silk Sleep Mask",
-    category: "Keepsake",
-    pricePkr: 3200,
-    tag: "Luxury",
-    description: "22-Momme pure organic silk with custom monogram embroidery.",
-  },
-  {
-    id: "item-4",
-    name: "Matcha & Vanilla Botanical Tea Tin",
-    category: "Drinkware",
-    pricePkr: 1650,
-    tag: "Organic",
-    description: "Ceremonial grade Japanese green tea blend with dried rosebuds.",
-  },
-  {
-    id: "item-5",
-    name: "Handcrafted Ceramic Speckled Mug",
-    category: "Keepsake",
-    pricePkr: 2200,
-    tag: "Artisanal",
-    description: "Kiln-fired stoneware finished in warm speckled ivory glaze.",
-  },
-  {
-    id: "item-6",
-    name: "Miniature Preserved Rose Dome",
-    category: "Botanical",
-    pricePkr: 3900,
-    tag: "Everlasting",
-    description: "Real Ecuadorian rose preserved to stay fresh for up to 3 years.",
-  },
-  {
-    id: "item-7",
-    name: "Organic Lavender Bath Salts & Scrub",
-    category: "Self-Care",
-    pricePkr: 2100,
-    tag: "Relaxation",
-    description: "Infused with cold-pressed essential oils and Himalayan pink crystals.",
-  },
-  {
-    id: "item-8",
-    name: "Gold-Plated Heart Keepsake Keychain",
-    category: "Accessories",
+    id: "item-pendant",
+    name: "Delicate Minimalist Pendant",
+    category: "Jewelry",
     pricePkr: 1450,
-    tag: "Keepsake",
-    description: "Polished brushed gold hardware with engraved floral emblem.",
+    tag: "Gold Finish",
+    description: "Fine chain necklace with polished solitaire crystal pendant.",
+  },
+  {
+    id: "item-tulip-bracelet",
+    name: "Enamel Tulip Charm Bracelet",
+    category: "Jewelry",
+    pricePkr: 950,
+    tag: "Trending",
+    description: "Pastel enamel floral tulip link chain charm bracelet.",
+  },
+  {
+    id: "item-earrings",
+    name: "Sparkling Crystal Floral Earrings",
+    category: "Jewelry",
+    pricePkr: 850,
+    tag: "Delicate",
+    description: "Shimmering cubic zirconia floral stud earrings.",
+  },
+  {
+    id: "item-bangles",
+    name: "Festive Velvet & Metal Bangles Set",
+    category: "Jewelry",
+    pricePkr: 1150,
+    tag: "Festive",
+    description: "Rich matching bangles set with gold metallic accents.",
+  },
+  {
+    id: "item-hair-clip",
+    name: "Pearl & Crystal Hair Barrette Clip",
+    category: "Jewelry",
+    pricePkr: 450,
+    tag: "Accessory",
+    description: "Handcrafted faux pearl and crystal hair accent clip.",
+  },
+  {
+    id: "item-hair-claw",
+    name: "Aesthetic Matte French Hair Claw",
+    category: "Jewelry",
+    pricePkr: 550,
+    tag: "Accessory",
+    description: "Strong-grip aesthetic claw clip in pastel neutral finish.",
+  },
+  {
+    id: "item-choker-set",
+    name: "Regal Velvet & Pearl Choker Set",
+    category: "Jewelry",
+    pricePkr: 2450,
+    tag: "Statement",
+    description: "Intricate choker necklace with matching festive drop earrings.",
+  },
+
+  // Crochet
+  {
+    id: "item-crochet-keychain",
+    name: "Handmade Crochet Flower Keychain",
+    category: "Crochet",
+    pricePkr: 750,
+    tag: "Handmade",
+    description: "Artisanal crochet woven floral bud charm with gold key ring.",
+  },
+  {
+    id: "item-crochet-gajra",
+    name: "Handmade Crochet Wrist Gajra",
+    category: "Crochet",
+    pricePkr: 950,
+    tag: "Handcrafted",
+    description: "Traditional wrist gajra lovingly hand-knitted with soft yarn.",
+  },
+
+  // Coffee Cup & Snacks
+  {
+    id: "item-coffee-cup",
+    name: "Aesthetic Ceramic Coffee Cup",
+    category: "Coffee Cup & Snacks",
+    pricePkr: 1450,
+    tag: "Stoneware",
+    description: "Kiln-glazed speckled ceramic mug with smooth ergonomic handle.",
+  },
+  {
+    id: "item-lays",
+    name: "Crispy Salted Lays Potato Crisps",
+    category: "Coffee Cup & Snacks",
+    pricePkr: 350,
+    tag: "Crunchy",
+    description: "Classic golden wavy salted potato crisps pack.",
+  },
+  {
+    id: "item-chocolate",
+    name: "Gourmet Chocolates Selection",
+    category: "Coffee Cup & Snacks",
+    pricePkr: 950,
+    tag: "Indulgence",
+    description: "Assortment of rich dairy milk and hazelnut gourmet chocolates.",
+  },
+
+  // Scented Candle
+  {
+    id: "item-scented-candle",
+    name: "Rose & Vanilla Scented Soy Candle",
+    category: "Scented Candle",
+    pricePkr: 1650,
+    tag: "Aromatherapy",
+    description: "Hand-poured 100% natural botanical wax candle with wooden wick.",
+  },
+
+  // Makeup
+  {
+    id: "item-eyeshadow",
+    name: "9-Pan Rose & Nude Eyeshadow Palette",
+    category: "Makeup",
+    pricePkr: 1850,
+    tag: "Glam",
+    description: "Velvety matte and metallic shimmer wearable everyday shades.",
+  },
+  {
+    id: "item-lipstick",
+    name: "Velvet Matte Moisture Lipstick",
+    category: "Makeup",
+    pricePkr: 1250,
+    tag: "Long-Wear",
+    description: "Richly pigmented hydrating nude matte lipstick.",
+  },
+  {
+    id: "item-lip-gloss",
+    name: "Crystal Glass Shine Lip Gloss",
+    category: "Makeup",
+    pricePkr: 950,
+    tag: "Plumping",
+    description: "Non-sticky high-shine moisturizing crystal lip lacquer.",
+  },
+  {
+    id: "item-mascara-lip-pencil",
+    name: "Mascara & Lip Pencil Duo",
+    category: "Makeup",
+    pricePkr: 1200,
+    tag: "Duo Essential",
+    description: "Volumizing lash mascara paired with defining contour lip pencil.",
+  },
+  {
+    id: "item-eyeliner",
+    name: "Precision Waterproof Matte Eyeliner",
+    category: "Makeup",
+    pricePkr: 850,
+    tag: "Smudge-Proof",
+    description: "Ultra-fine tip intense black waterproof liquid eyeliner pen.",
+  },
+  {
+    id: "item-highlighter",
+    name: "Champagne Strobe Baked Highlighter",
+    category: "Makeup",
+    pricePkr: 1350,
+    tag: "Radiant",
+    description: "Illuminating pressed powder highlighter for instant dewy glow.",
+  },
+  {
+    id: "item-nail",
+    name: "Glossy Pastel Nail Polish & Kit",
+    category: "Makeup",
+    pricePkr: 650,
+    tag: "Salon Finish",
+    description: "Quick-dry chip-resistant glossy pastel nail lacquer.",
+  },
+  {
+    id: "item-blush",
+    name: "Silky Petal Peach Powder Blush",
+    category: "Makeup",
+    pricePkr: 1150,
+    tag: "Soft Glow",
+    description: "Finely milled blendable powder blush for healthy natural flush.",
   },
 ];
 
@@ -306,13 +429,30 @@ export default function HomePage() {
   // Box Customizer State
   const [selectedBox, setSelectedBox] = useState(BOX_STYLES[0]);
   const [selectedBoxItems, setSelectedBoxItems] = useState<string[]>([
-    "item-1",
-    "item-2",
+    "item-jhumka",
+    "item-scented-candle",
+    "item-chocolate",
   ]);
+  const [boxCategoryFilter, setBoxCategoryFilter] = useState<string>("all");
+  const [includePhoto, setIncludePhoto] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoCaption, setPhotoCaption] = useState("");
   const [cardMessage, setCardMessage] = useState(
     "Wishing you endless joy and blooming memories on your special day."
   );
-  const [cardRecipient, setCardRecipient] = useState("Isabella");
+  const [cardRecipient, setCardRecipient] = useState("Ayesha");
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+        setIncludePhoto(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Bouquet Customizer State
   const [selectedFlower, setSelectedFlower] = useState(BOUQUET_FLOWERS[0]);
@@ -333,7 +473,7 @@ export default function HomePage() {
     if (selectedBoxItems.includes(id)) {
       setSelectedBoxItems(selectedBoxItems.filter((i) => i !== id));
     } else {
-      if (selectedBoxItems.length < 5) {
+      if (selectedBoxItems.length < 6) {
         setSelectedBoxItems([...selectedBoxItems, id]);
       }
     }
@@ -354,7 +494,8 @@ export default function HomePage() {
     selectedBoxItems.reduce((acc, currId) => {
       const item = SAMPLE_BOX_ITEMS.find((i) => i.id === currId);
       return acc + (item ? item.pricePkr : 0);
-    }, 0);
+    }, 0) +
+    (includePhoto ? 250 : 0);
 
   const bouquetTotalPkr =
     selectedFlower.pricePkr +
@@ -657,10 +798,10 @@ export default function HomePage() {
                     1. Box Vessel
                   </TabsTrigger>
                   <TabsTrigger value="step-items" className="text-xs sm:text-sm">
-                    2. Curate Items ({selectedBoxItems.length}/5)
+                    2. Items ({selectedBoxItems.length}/6)
                   </TabsTrigger>
                   <TabsTrigger value="step-card" className="text-xs sm:text-sm">
-                    3. Wax Card
+                    3. Card & Photo {includePhoto ? "📸" : ""}
                   </TabsTrigger>
                 </TabsList>
 
@@ -708,111 +849,211 @@ export default function HomePage() {
                   </div>
                 </TabsContent>
 
-                {/* Step 2: Curate Items */}
+                {/* Step 2: Curate Items (With Category Filter Pills) */}
                 <TabsContent value="step-items" className="space-y-4">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                     <div>
                       <h3 className="font-serif text-lg font-semibold text-[#6B1E2D]">
                         Select Curated Luxuries
                       </h3>
                       <p className="text-xs text-[#8C3A4B]">
-                        Pick up to 5 items to fill your chosen box.
+                        Pick up to 6 treasures to fill your custom box.
                       </p>
                     </div>
-                    <Badge variant="cream" className="font-semibold">
-                      {selectedBoxItems.length} of 5 selected
+                    <Badge variant="cream" className="font-semibold self-start sm:self-auto">
+                      {selectedBoxItems.length} of 6 selected
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
-                    {SAMPLE_BOX_ITEMS.map((item) => {
-                      const isSelected = selectedBoxItems.includes(item.id);
-                      return (
-                        <div
-                          key={item.id}
-                          onClick={() => toggleBoxItem(item.id)}
-                          className={`cursor-pointer p-3.5 rounded-2xl border transition-all duration-200 flex items-start justify-between gap-3 ${
-                            isSelected
-                              ? "border-[#6B1E2D] bg-[#E8D8C3]/70 shadow-xs"
-                              : "border-[#E0CEB7] bg-[#F8F1E7] hover:bg-[#E8D8C3]/30"
-                          }`}
-                        >
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-[10px] uppercase font-bold tracking-wider text-[#8C3A4B]">
-                                {item.category}
-                              </span>
-                              <span className="text-[9px] bg-[#C5A880]/30 text-[#501521] px-1.5 py-0.5 rounded font-medium">
-                                {item.tag}
-                              </span>
-                            </div>
-                            <p className="font-serif font-medium text-sm text-[#6B1E2D]">
-                              {item.name}
-                            </p>
-                            <p className="text-xs text-[#8C3A4B] line-clamp-2">
-                              {item.description}
-                            </p>
-                            <p className="text-xs font-bold text-[#6B1E2D] pt-1">
-                              +Rs. {item.pricePkr.toLocaleString()}
-                            </p>
-                          </div>
+                  {/* Category Filter Pills */}
+                  <div className="flex flex-wrap items-center gap-1.5 pb-2">
+                    {[
+                      { id: "all", label: "All Items" },
+                      { id: "Jewelry", label: "Jewelry" },
+                      { id: "Crochet", label: "Crochet" },
+                      { id: "Makeup", label: "Makeup" },
+                      { id: "Coffee Cup & Snacks", label: "Cups & Snacks" },
+                      { id: "Scented Candle", label: "Candle" },
+                    ].map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setBoxCategoryFilter(cat.id)}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
+                          boxCategoryFilter === cat.id
+                            ? "bg-[#6B1E2D] text-[#F8F1E7] shadow-xs"
+                            : "bg-[#E8D8C3]/60 text-[#6B1E2D] hover:bg-[#E8D8C3]"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[440px] overflow-y-auto pr-1">
+                    {SAMPLE_BOX_ITEMS
+                      .filter((item) => boxCategoryFilter === "all" || item.category === boxCategoryFilter)
+                      .map((item) => {
+                        const isSelected = selectedBoxItems.includes(item.id);
+                        return (
                           <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                            key={item.id}
+                            onClick={() => toggleBoxItem(item.id)}
+                            className={`cursor-pointer p-3.5 rounded-2xl border transition-all duration-200 flex items-start justify-between gap-3 ${
                               isSelected
-                                ? "bg-[#6B1E2D] text-[#F8F1E7]"
-                                : "border border-[#E0CEB7] text-transparent"
+                                ? "border-[#6B1E2D] bg-[#E8D8C3]/70 shadow-xs ring-1 ring-[#6B1E2D]/40"
+                                : "border-[#E0CEB7] bg-[#F8F1E7] hover:bg-[#E8D8C3]/30"
                             }`}
                           >
-                            <Check className="h-3.5 w-3.5" />
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-[#8C3A4B]">
+                                  {item.category}
+                                </span>
+                                <span className="text-[9px] bg-[#C5A880]/30 text-[#501521] px-1.5 py-0.5 rounded font-medium">
+                                  {item.tag}
+                                </span>
+                              </div>
+                              <p className="font-serif font-medium text-sm text-[#6B1E2D]">
+                                {item.name}
+                              </p>
+                              <p className="text-xs text-[#8C3A4B] line-clamp-2">
+                                {item.description}
+                              </p>
+                              <p className="text-xs font-bold text-[#6B1E2D] pt-1">
+                                +Rs. {item.pricePkr.toLocaleString()}
+                              </p>
+                            </div>
+
+                            <div
+                              className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                                isSelected
+                                  ? "bg-[#6B1E2D] text-[#F8F1E7]"
+                                  : "border border-[#E0CEB7] text-transparent"
+                              }`}
+                            >
+                              <Check className="h-3.5 w-3.5" />
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </TabsContent>
 
-                {/* Step 3: Calligraphy & Card */}
-                <TabsContent value="step-card" className="space-y-4">
-                  <h3 className="font-serif text-lg font-semibold text-[#6B1E2D]">
-                    Handwritten Calligraphy Card
-                  </h3>
-                  <p className="text-xs text-[#8C3A4B]">
-                    Each note is inked by hand on heavy 350gsm cotton cardstock and sealed with our gold wax crest.
-                  </p>
-
+                {/* Step 3: Calligraphy & Added Picture */}
+                <TabsContent value="step-card" className="space-y-5">
                   <div className="space-y-3">
-                    <div>
-                      <label className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B] block mb-1">
-                        Recipient Name
-                      </label>
-                      <Input
-                        value={cardRecipient}
-                        onChange={(e) => setCardRecipient(e.target.value)}
-                        placeholder="e.g. Ayesha, Mom, My Love"
-                        className="bg-white/70"
-                      />
+                    <h3 className="font-serif text-lg font-semibold text-[#6B1E2D]">
+                      Handwritten Calligraphy Card
+                    </h3>
+                    <p className="text-xs text-[#8C3A4B]">
+                      Each note is inked by hand on heavy 350gsm cotton cardstock and sealed with our gold wax crest.
+                    </p>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B] block mb-1">
+                          Recipient Name
+                        </label>
+                        <Input
+                          value={cardRecipient}
+                          onChange={(e) => setCardRecipient(e.target.value)}
+                          placeholder="e.g. Ayesha, Mom, My Love"
+                          className="bg-white/70"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B] block mb-1">
+                          Your Personal Message
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={cardMessage}
+                          onChange={(e) => setCardMessage(e.target.value)}
+                          className="w-full rounded-2xl border border-[#E0CEB7] bg-white/70 p-3.5 text-sm text-[#6B1E2D] focus:outline-none focus:ring-2 focus:ring-[#6B1E2D]"
+                          placeholder="Write your heartfelt message here..."
+                        />
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-[#E8D8C3]/40 border border-[#E0CEB7] flex items-center gap-3">
+                        <Feather className="h-4 w-4 text-[#6B1E2D] shrink-0" />
+                        <span className="text-xs text-[#6B1E2D]">
+                          Gold wax seal finish & dried lavender sprig included complimentary.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ADDED PICTURE (PHOTO PRINT UPLOAD) */}
+                  <div className="pt-4 border-t border-[#E0CEB7]/80 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-serif text-base font-semibold text-[#6B1E2D] flex items-center gap-2">
+                          <Camera className="h-4 w-4 text-[#C5A880]" />
+                          Include a Printed Keepsake Photo
+                        </h4>
+                        <p className="text-xs text-[#8C3A4B]">
+                          Upload a memory to be printed on archival gloss cardstock inside the box (+Rs. 250).
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIncludePhoto(!includePhoto)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                          includePhoto ? "bg-[#6B1E2D]" : "bg-[#E0CEB7]"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            includePhoto ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
                     </div>
 
-                    <div>
-                      <label className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B] block mb-1">
-                        Your Personal Message
-                      </label>
-                      <textarea
-                        rows={4}
-                        value={cardMessage}
-                        onChange={(e) => setCardMessage(e.target.value)}
-                        className="w-full rounded-2xl border border-[#E0CEB7] bg-white/70 p-4 text-sm text-[#6B1E2D] focus:outline-none focus:ring-2 focus:ring-[#6B1E2D]"
-                        placeholder="Write your heartfelt message here..."
-                      />
-                    </div>
+                    {includePhoto && (
+                      <div className="p-4 rounded-2xl bg-[#E8D8C3]/40 border border-[#E0CEB7] space-y-3">
+                        <label className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B] block">
+                          Upload Photograph (JPG or PNG)
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                          className="text-xs text-[#6B1E2D] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#6B1E2D] file:text-[#F8F1E7] hover:file:bg-[#822436] file:cursor-pointer cursor-pointer"
+                        />
 
-                    <div className="p-4 rounded-2xl bg-[#E8D8C3]/40 border border-[#E0CEB7] flex items-center gap-3">
-                      <Feather className="h-5 w-5 text-[#6B1E2D]" />
-                      <span className="text-xs text-[#6B1E2D]">
-                        Gold wax seal finish & dried botanical lavender sprig included complimentary.
-                      </span>
-                    </div>
+                        {photoPreview && (
+                          <div className="flex items-center gap-4 pt-2">
+                            <div className="p-2 bg-white rounded-xl shadow-md border border-[#E0CEB7] max-w-[120px] text-center">
+                              <img
+                                src={photoPreview}
+                                alt="Uploaded Keepsake"
+                                className="w-24 h-24 object-cover rounded-lg mx-auto"
+                              />
+                              <span className="text-[9px] text-[#8C3A4B] mt-1 block font-serif italic">
+                                {photoCaption || "Photo Attached"}
+                              </span>
+                            </div>
+                            <div className="space-y-1.5 flex-1">
+                              <label className="text-[11px] font-semibold text-[#8C3A4B] block">
+                                Photo Caption or Date (Optional)
+                              </label>
+                              <Input
+                                value={photoCaption}
+                                onChange={(e) => setPhotoCaption(e.target.value)}
+                                placeholder="e.g. Always & Forever • 2026"
+                                className="bg-white/80 text-xs h-9"
+                              />
+                              <p className="text-[10px] text-emerald-800 font-medium">
+                                ✓ Photo will be packaged in a delicate wax-stamped protective glassine pouch.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -868,6 +1109,34 @@ export default function HomePage() {
                   })
                 )}
               </div>
+
+              {/* Photo Keepsake Preview */}
+              {includePhoto && (
+                <div className="py-3 border-b border-[#E0CEB7]/70 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2.5">
+                    {photoPreview ? (
+                      <img
+                        src={photoPreview}
+                        alt="Photo keepsake"
+                        className="w-9 h-9 rounded-lg object-cover border border-[#E0CEB7]"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-lg bg-[#E0CEB7]/60 flex items-center justify-center text-[#6B1E2D]">
+                        <Camera className="h-4 w-4" />
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-[#6B1E2D] font-medium block">
+                        • Keepsake Photo Print
+                      </span>
+                      <span className="text-[10px] text-[#8C3A4B] italic">
+                        {photoCaption ? `"${photoCaption}"` : "Protective pouch included"}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[#8C3A4B] shrink-0 font-medium">+Rs. 250</span>
+                </div>
+              )}
 
               {/* Card Preview */}
               <div className="py-4 border-b border-[#E0CEB7]/70 bg-[#E8D8C3]/30 p-3.5 rounded-2xl my-3">
@@ -1377,9 +1646,29 @@ export default function HomePage() {
               </div>
               <p className="text-xs text-[#8C3A4B]">
                 {activeCustomizer === "box"
-                  ? `${selectedBoxItems.length} curated treats & wax calligraphy card`
+                  ? `${selectedBoxItems.length} curated treats & wax calligraphy card${
+                      includePhoto ? " + photo print" : ""
+                    }`
                   : `${selectedWrap.name} + ${selectedRibbon.name} & ${selectedBouquetAddons.length} add-ons`}
               </p>
+              {activeCustomizer === "box" && includePhoto && (
+                <div className="flex items-center gap-2 pt-2 border-t border-[#E0CEB7]/70">
+                  {photoPreview ? (
+                    <img
+                      src={photoPreview}
+                      alt="Keepsake Photo"
+                      className="w-7 h-7 rounded object-cover border border-[#E0CEB7]"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded bg-[#E0CEB7] flex items-center justify-center text-[#6B1E2D]">
+                      <Camera className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                  <span className="text-xs text-[#6B1E2D]">
+                    Photo attached: {photoCaption ? `"${photoCaption}"` : "Keepsake print in pouch"} (+Rs. 250)
+                  </span>
+                </div>
+              )}
               {activeCustomizer === "box" && (
                 <p className="text-xs italic text-[#8C3A4B] border-t border-[#E0CEB7] pt-2">
                   Card note: &ldquo;{cardMessage}&rdquo;
