@@ -46,6 +46,7 @@ import {
   CustomBoxItem,
   FlowerStem,
 } from "@/lib/catalog-data";
+import { saveCart } from "@/lib/customer-storage";
 
 type MainTab = "box" | "bouquet" | "browse";
 
@@ -229,16 +230,62 @@ function CatalogContent() {
   const [shippingAddress, setShippingAddress] = useState("");
 
   const openBoxOrder = () => {
+    const itemsDescription = selectedBoxItems
+      .map((id) => SAMPLE_BOX_ITEMS.find((i) => i.id === id)?.name)
+      .filter(Boolean)
+      .join(", ");
+
+    saveCart([
+      {
+        id: `box-${selectedBox.id}`,
+        title: selectedBox.name,
+        type: "box",
+        pricePkr: boxTotalPkr,
+        quantity: 1,
+        details: `${selectedBoxItems.length} items: ${itemsDescription}`,
+        recipientName: boxCardRecipient,
+        cardMessage: boxCardMessage,
+        photoCaption: photoCaption,
+        includesPhoto: includePhoto,
+      },
+    ]);
     setModalMode("box");
     setIsOrderModalOpen(true);
   };
 
   const openBouquetOrder = () => {
+    const addonsDesc = selectedBouquetAddons
+      .map((id) => BOUQUET_ADDONS.find((a) => a.id === id)?.name)
+      .filter(Boolean)
+      .join(", ");
+
+    saveCart([
+      {
+        id: `bouquet-${selectedFlower.id}`,
+        title: `${selectedFlower.name} Bouquet`,
+        type: "bouquet",
+        pricePkr: bouquetTotalPkr,
+        quantity: 1,
+        details: `${selectedWrap.name} + ${selectedRibbon.name}${addonsDesc ? ` + ${addonsDesc}` : ""}`,
+        recipientName: bouquetCardRecipient,
+        cardMessage: bouquetCardMessage,
+      },
+    ]);
     setModalMode("bouquet");
     setIsOrderModalOpen(true);
   };
 
   const openQuickItemOrder = (item: QuickOrderItem) => {
+    saveCart([
+      {
+        id: `catalog-${item.title.toLowerCase().replace(/\s+/g, "-")}`,
+        title: item.title,
+        type: "item",
+        pricePkr: item.pricePkr,
+        quantity: 1,
+        details: item.description || (item.inclusions ? item.inclusions.join(", ") : undefined),
+      },
+    ]);
     setQuickOrderItem(item);
     setModalMode("item");
     setIsOrderModalOpen(true);
@@ -1450,20 +1497,14 @@ function CatalogContent() {
               </div>
             </div>
 
-            <Button
-              className="w-full text-xs font-semibold uppercase tracking-widest mt-4 py-6"
-              size="lg"
-              onClick={() => {
-                alert(
-                  `Order recorded! Total: Rs. ${(
-                    activeTotalPkr + (activeTotalPkr >= 5000 ? 0 : 350)
-                  ).toLocaleString()} PKR for ${selectedCity}. Connected to Supabase.`
-                );
-                setIsOrderModalOpen(false);
-              }}
-            >
-              Proceed to Gifting Checkout
-            </Button>
+            <Link href="/checkout" className="block w-full">
+              <Button
+                className="w-full text-xs font-semibold uppercase tracking-widest mt-4 py-6 shadow-md"
+                size="lg"
+              >
+                Proceed to Secure Checkout →
+              </Button>
+            </Link>
           </div>
         </DialogContent>
       </Dialog>
