@@ -58,12 +58,12 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-[#8C3A4B]">
               <li>
-                <Link href="/#customizer-section" className="hover:text-[#6B1E2D] transition-colors">
+                <Link href="/catalog?tab=box" className="hover:text-[#6B1E2D] transition-colors">
                   Customize Gift Box
                 </Link>
               </li>
               <li>
-                <Link href="/#customizer-section" className="hover:text-[#6B1E2D] transition-colors">
+                <Link href="/catalog?tab=bouquet" className="hover:text-[#6B1E2D] transition-colors">
                   Customize Bouquet
                 </Link>
               </li>
@@ -183,6 +183,8 @@ export function Footer() {
             <Link href="/shipping-policy" className="hover:underline">Shipping</Link>
             <span>•</span>
             <Link href="/refund-policy" className="hover:underline">Refunds</Link>
+            <span>•</span>
+            <Link href="/admin" className="font-semibold hover:underline text-[#6B1E2D]">Admin Portal</Link>
           </div>
         </div>
       </div>
