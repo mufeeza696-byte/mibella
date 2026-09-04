@@ -21,14 +21,14 @@ export function Navbar() {
           {/* Left Navigation */}
           <nav className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest font-semibold">
             <Link
-              href="/#customizer-section"
+              href="/catalog?tab=box"
               className="hover:text-[#822436] transition-colors flex items-center gap-1.5"
             >
               <Gift className="h-3.5 w-3.5" />
               Customize Box
             </Link>
             <Link
-              href="/#customizer-section"
+              href="/catalog?tab=bouquet"
               className="hover:text-[#822436] transition-colors flex items-center gap-1.5"
             >
               <Flower2 className="h-3.5 w-3.5" />
@@ -71,7 +71,7 @@ export function Navbar() {
               <User className="h-5 w-5" />
             </Link>
 
-            <Link href="/#customizer-section">
+            <Link href="/catalog?tab=browse">
               <Button variant="default" size="sm" className="relative flex items-center gap-2">
                 <ShoppingBag className="h-4 w-4" />
                 <span className="hidden sm:inline">Bag</span>
@@ -82,10 +82,10 @@ export function Navbar() {
 
         {/* Mobile Quick Navigation Bar */}
         <div className="lg:hidden flex items-center justify-around py-2.5 px-3 border-t border-[#E0CEB7]/60 text-[11px] uppercase tracking-wider font-semibold bg-[#F8F1E7]/70 overflow-x-auto gap-4 scrollbar-none">
-          <Link href="/#customizer-section" className="hover:text-[#822436] shrink-0">
+          <Link href="/catalog?tab=box" className="hover:text-[#822436] shrink-0">
             Custom Box
           </Link>
-          <Link href="/#customizer-section" className="hover:text-[#822436] shrink-0">
+          <Link href="/catalog?tab=bouquet" className="hover:text-[#822436] shrink-0">
             Bouquet
           </Link>
           <Link href="/catalog" className="text-[#6B1E2D] font-bold shrink-0">
