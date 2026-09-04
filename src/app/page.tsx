@@ -36,6 +36,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Footer } from "@/components/footer";
 
 // ==========================================
 // 1. DATA MODELS FOR GIFT BOXES (PKR)
@@ -402,11 +403,14 @@ export default function HomePage() {
               Customize Bouquet
             </button>
             <a href="#collections" className="hover:text-[#822436] transition-colors">
-              Curated Collections
+              Collections
             </a>
-            <a href="#unboxing" className="hover:text-[#822436] transition-colors">
-              The Unboxing Ritual
-            </a>
+            <Link href="/faq" className="hover:text-[#822436] transition-colors">
+              FAQ
+            </Link>
+            <Link href="/contact" className="hover:text-[#822436] transition-colors">
+              Contact
+            </Link>
           </nav>
 
           {/* Central Luxury Brand Emblem */}
@@ -434,13 +438,13 @@ export default function HomePage() {
               <Search className="h-5 w-5" />
             </button>
 
-            <button
+            <Link
+              href="/auth"
               aria-label="User Account"
               className="p-2 rounded-full text-[#6B1E2D] hover:bg-[#E8D8C3] transition-colors"
-              onClick={() => setIsOrderModalOpen(true)}
             >
               <User className="h-5 w-5" />
-            </button>
+            </Link>
 
             <Button
               variant="default"
@@ -1345,77 +1349,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#E8D8C3] text-[#6B1E2D] pt-16 pb-12 border-t border-[#E0CEB7]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="space-y-4 md:col-span-1">
-            <span className="font-serif text-3xl tracking-[0.2em] font-medium block">
-              MIBELLA
-            </span>
-            <p className="text-xs text-[#8C3A4B] leading-relaxed">
-              Atelier of bespoke gift boxes and handcrafted floral arrangements. Designed for heartfelt connections across Pakistan.
-            </p>
-            <div className="pt-2">
-              <span className="inline-flex items-center gap-2 text-[11px] font-semibold bg-[#F8F1E7] px-3 py-1 rounded-full border border-[#E0CEB7]">
-                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
-                Supabase Backend Ready
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-serif text-sm font-semibold uppercase tracking-wider mb-4">
-              The Collections
-            </h4>
-            <ul className="space-y-2 text-xs text-[#8C3A4B]">
-              <li>
-                <button onClick={() => scrollToCustomizer("box")} className="hover:text-[#6B1E2D] transition-colors">
-                  Customize Gift Boxes
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToCustomizer("bouquet")} className="hover:text-[#6B1E2D] transition-colors">
-                  Customize Bouquets
-                </button>
-              </li>
-              <li><a href="#collections" className="hover:text-[#6B1E2D] transition-colors">Anniversary Suites</a></li>
-              <li><a href="#collections" className="hover:text-[#6B1E2D] transition-colors">Corporate Gifting</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-serif text-sm font-semibold uppercase tracking-wider mb-4">
-              Gifting Care
-            </h4>
-            <ul className="space-y-2 text-xs text-[#8C3A4B]">
-              <li><a href="#" className="hover:text-[#6B1E2D] transition-colors">Delivery Date Calendar</a></li>
-              <li><a href="#" className="hover:text-[#6B1E2D] transition-colors">Custom Message Inking</a></li>
-              <li><a href="#" className="hover:text-[#6B1E2D] transition-colors">Order Tracking</a></li>
-              <li><a href="#" className="hover:text-[#6B1E2D] transition-colors">Frequently Asked Questions</a></li>
-            </ul>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="font-serif text-sm font-semibold uppercase tracking-wider">
-              Join the MIBELLA Circle
-            </h4>
-            <p className="text-xs text-[#8C3A4B]">
-              Receive private access to seasonal floral drops and gifting inspirations.
-            </p>
-            <div className="flex items-center gap-2">
-              <Input placeholder="Enter your email" className="bg-white/80 text-xs" />
-              <Button size="sm" className="shrink-0 text-xs font-semibold uppercase">
-                Join
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-[#E0CEB7]/70 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C3A4B]">
-          <p>© {new Date().getFullYear()} MIBELLA Atelier. All rights reserved.</p>
-          <p className="mt-2 sm:mt-0 font-serif italic">Crafted with Next.js, Tailwind CSS, TanStack Query & Supabase.</p>
-        </div>
-      </footer>
+      {/* Shared Luxury Footer with Full Legal Links */}
+      <Footer />
 
       {/* ============================================================ */}
       {/* CART & CHECKOUT PREVIEW DIALOG (PKR)                         */}
