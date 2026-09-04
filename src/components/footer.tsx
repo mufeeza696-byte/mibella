@@ -5,15 +5,22 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Check, ShieldCheck, Truck, Heart } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
       setSubscribed(true);
+      try {
+        const supabase = createClient();
+        await supabase.from("newsletter_subscribers").insert([{ email }]);
+      } catch (e) {
+        // Fallback gracefully
+      }
       setEmail("");
     }
   };

@@ -195,12 +195,42 @@ function CheckoutContent() {
       }),
     };
 
-    setTimeout(() => {
-      clearCart();
-      setOrderConfirmed(confirmedOrderData);
-      setIsSubmitting(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 900);
+    try {
+      const { error: dbError } = await supabase.from("orders").insert([
+        {
+          id: generatedOrderId,
+          user_id: currentUser?.id || null,
+          customer_name: customerName,
+          customer_email: customerEmail || null,
+          customer_phone: customerPhone,
+          recipient_name: recipientName || customerName,
+          recipient_phone: recipientPhone || null,
+          delivery_city: deliveryCity,
+          delivery_address: deliveryAddress,
+          scheduled_date: deliveryDate || null,
+          delivery_slot: deliverySlot,
+          calligraphy_message: calligraphyMessage,
+          payment_method: paymentMethod,
+          subtotal_pkr: subtotalPkr,
+          shipping_fee_pkr: shippingFeePkr,
+          grand_total_pkr: grandTotalPkr,
+          status: "pending",
+          items: cartItems,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (dbError) {
+        console.warn("Notice inserting order into Supabase orders table:", dbError.message);
+      }
+    } catch (dbErr: any) {
+      console.warn("Database recording notice:", dbErr?.message);
+    }
+
+    clearCart();
+    setOrderConfirmed(confirmedOrderData);
+    setIsSubmitting(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // ============================================================
