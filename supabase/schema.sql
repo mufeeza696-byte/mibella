@@ -145,3 +145,125 @@ CREATE POLICY "Anyone can subscribe to newsletter"
   ON public.newsletter_subscribers FOR INSERT 
   TO public
   WITH CHECK (true);
+
+-- ============================================================
+-- 5. PRODUCTS TABLE (Catalog & Customizer Items)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.products (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  type TEXT DEFAULT 'item', -- box, bouquet, item
+  price_pkr NUMERIC NOT NULL,
+  sale_price_pkr NUMERIC,
+  stock INTEGER NOT NULL DEFAULT 50,
+  badge TEXT,
+  description TEXT,
+  inclusions JSONB DEFAULT '[]'::jsonb,
+  image TEXT,
+  images JSONB DEFAULT '[]'::jsonb,
+  is_featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view products"
+  ON public.products FOR SELECT
+  TO public
+  USING (true);
+
+CREATE POLICY "Anyone can insert products"
+  ON public.products FOR INSERT
+  TO public
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can update products"
+  ON public.products FOR UPDATE
+  TO public
+  USING (true);
+
+CREATE POLICY "Anyone can delete products"
+  ON public.products FOR DELETE
+  TO public
+  USING (true);
+
+-- ============================================================
+-- 6. CATEGORIES TABLE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.categories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view categories"
+  ON public.categories FOR SELECT
+  TO public
+  USING (true);
+
+CREATE POLICY "Anyone can modify categories"
+  ON public.categories FOR ALL
+  TO public
+  USING (true);
+
+-- ============================================================
+-- 7. PROMO CODES TABLE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.promo_codes (
+  id TEXT PRIMARY KEY,
+  code TEXT UNIQUE NOT NULL,
+  discount_percent NUMERIC,
+  discount_pkr NUMERIC,
+  min_order_pkr NUMERIC DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view promo codes"
+  ON public.promo_codes FOR SELECT
+  TO public
+  USING (true);
+
+CREATE POLICY "Anyone can modify promo codes"
+  ON public.promo_codes FOR ALL
+  TO public
+  USING (true);
+
+-- ============================================================
+-- 8. STORE SETTINGS TABLE
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.store_settings (
+  id TEXT PRIMARY KEY DEFAULT 'global_settings',
+  shipping_fee_pkr NUMERIC DEFAULT 350,
+  free_shipping_threshold_pkr NUMERIC DEFAULT 5000,
+  whatsapp_number TEXT DEFAULT '+923001234567',
+  support_email TEXT DEFAULT 'concierge@mibella.pk',
+  announcement_banner TEXT DEFAULT '✨ Complimentary hand-inked calligraphy card with gold wax crest on all bespoke orders across Pakistan.',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.store_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view store settings"
+  ON public.store_settings FOR SELECT
+  TO public
+  USING (true);
+
+CREATE POLICY "Anyone can modify store settings"
+  ON public.store_settings FOR ALL
+  TO public
+  USING (true);
+
+-- Seed initial global settings if missing
+INSERT INTO public.store_settings (id, shipping_fee_pkr, free_shipping_threshold_pkr, whatsapp_number, support_email, announcement_banner)
+VALUES ('global_settings', 350, 5000, '+923001234567', 'concierge@mibella.pk', '✨ Complimentary hand-inked calligraphy card with gold wax crest on all bespoke orders across Pakistan.')
+ON CONFLICT (id) DO NOTHING;
+

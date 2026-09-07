@@ -2,24 +2,32 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ShoppingBag,
   TrendingUp,
-  Clock,
-  CheckCircle2,
+  Boxes,
+  TicketPercent,
   Mail,
   Users,
   MapPin,
   ArrowUpRight,
   Sparkles,
-  Calendar,
-  AlertCircle,
-  Truck,
+  Plus,
+  Settings,
+  Tag,
+  RefreshCw,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import {
+  Product,
+  fetchProducts,
+  fetchPromoCodes,
+  PromoCode,
+} from "@/lib/products-storage";
 
 interface OrderSummary {
   id: string;
@@ -34,97 +42,102 @@ interface OrderSummary {
 }
 
 export default function AdminDashboardPage() {
-  const supabase = createClient();
-
   const [orders, setOrders] = useState<OrderSummary[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [promos, setPromos] = useState<PromoCode[]>([]);
   const [inquiriesCount, setInquiriesCount] = useState<number>(0);
   const [subscribersCount, setSubscribersCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadDashboardData() {
-      setLoading(true);
-      try {
-        // 1. Fetch Orders
-        const { data: ordersData, error: ordersError } = await supabase
-          .from("orders")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(10);
+  const loadDashboardData = async () => {
+    setLoading(true);
+    const supabase = createClient();
+    try {
+      // 1. Fetch Orders
+      const { data: ordersData } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(8);
 
-        if (ordersData && ordersData.length > 0) {
-          setOrders(ordersData);
-        } else {
-          // Provide default realistic atelier orders if database is fresh
-          setOrders([
-            {
-              id: "MIB-84210",
-              customer_name: "Mahnoor Tariq",
-              recipient_name: "Ayesha Malik",
-              delivery_city: "Lahore",
-              scheduled_date: "Today (Evening Slot)",
-              payment_method: "cod",
-              grand_total_pkr: 9850,
-              status: "preparing",
-              created_at: new Date().toISOString(),
-            },
-            {
-              id: "MIB-84209",
-              customer_name: "Hamza Farooq",
-              recipient_name: "Fatima Farooq",
-              delivery_city: "Islamabad",
-              scheduled_date: "Tomorrow (Morning)",
-              payment_method: "bank_transfer",
-              grand_total_pkr: 14500,
-              status: "pending",
-              created_at: new Date(Date.now() - 3600000).toISOString(),
-            },
-            {
-              id: "MIB-84208",
-              customer_name: "Dr. Bilal Saeed",
-              recipient_name: "Maryam Bilal",
-              delivery_city: "Karachi",
-              scheduled_date: "Next-Day",
-              payment_method: "card",
-              grand_total_pkr: 8200,
-              status: "dispatched",
-              created_at: new Date(Date.now() - 7200000).toISOString(),
-            },
-            {
-              id: "MIB-84207",
-              customer_name: "Sana Raza",
-              recipient_name: "Zoya Raza",
-              delivery_city: "Rawalpindi",
-              scheduled_date: "Midnight Surprise",
-              payment_method: "jazzcash_easypaisa",
-              grand_total_pkr: 12800,
-              status: "delivered",
-              created_at: new Date(Date.now() - 86400000).toISOString(),
-            },
-          ]);
-        }
-
-        // 2. Fetch Inquiries Count
-        const { count: inqCount } = await supabase
-          .from("inquiries")
-          .select("*", { count: "exact", head: true });
-        setInquiriesCount(inqCount || 3);
-
-        // 3. Fetch Subscribers Count
-        const { count: subCount } = await supabase
-          .from("newsletter_subscribers")
-          .select("*", { count: "exact", head: true });
-        setSubscribersCount(subCount || 12);
-      } catch (err) {
-        console.warn("Notice loading dashboard:", err);
-      } finally {
-        setLoading(false);
+      if (ordersData && ordersData.length > 0) {
+        setOrders(ordersData);
+      } else {
+        // Fallback realistic orders
+        setOrders([
+          {
+            id: "MIB-84210",
+            customer_name: "Mahnoor Tariq",
+            recipient_name: "Ayesha Malik",
+            delivery_city: "Lahore",
+            scheduled_date: "Today (Evening Slot)",
+            payment_method: "cod",
+            grand_total_pkr: 9850,
+            status: "preparing",
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: "MIB-84209",
+            customer_name: "Hamza Farooq",
+            recipient_name: "Fatima Farooq",
+            delivery_city: "Islamabad",
+            scheduled_date: "Tomorrow (Morning)",
+            payment_method: "bank_transfer",
+            grand_total_pkr: 14500,
+            status: "pending",
+            created_at: new Date(Date.now() - 3600000).toISOString(),
+          },
+          {
+            id: "MIB-84208",
+            customer_name: "Dr. Bilal Saeed",
+            recipient_name: "Maryam Bilal",
+            delivery_city: "Karachi",
+            scheduled_date: "Next-Day",
+            payment_method: "card",
+            grand_total_pkr: 8200,
+            status: "dispatched",
+            created_at: new Date(Date.now() - 7200000).toISOString(),
+          },
+          {
+            id: "MIB-84207",
+            customer_name: "Sana Raza",
+            recipient_name: "Zoya Raza",
+            delivery_city: "Rawalpindi",
+            scheduled_date: "Midnight Surprise",
+            payment_method: "jazzcash_easypaisa",
+            grand_total_pkr: 12800,
+            status: "delivered",
+            created_at: new Date(Date.now() - 86400000).toISOString(),
+          },
+        ]);
       }
-    }
-    loadDashboardData();
-  }, [supabase]);
 
-  // Aggregate Calculations
+      // 2. Fetch Products & Promos
+      const [prods, promoList] = await Promise.all([fetchProducts(), fetchPromoCodes()]);
+      setProducts(prods);
+      setPromos(promoList);
+
+      // 3. Counts
+      const { count: inqCount } = await supabase
+        .from("inquiries")
+        .select("*", { count: "exact", head: true });
+      setInquiriesCount(inqCount || 3);
+
+      const { count: subCount } = await supabase
+        .from("newsletter_subscribers")
+        .select("*", { count: "exact", head: true });
+      setSubscribersCount(subCount || 12);
+    } catch (err) {
+      console.warn("Notice loading dashboard:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
   const totalRevenuePkr = orders.reduce((sum, o) => sum + (Number(o.grand_total_pkr) || 0), 0);
   const pendingCount = orders.filter((o) => o.status === "pending" || o.status === "preparing").length;
 
@@ -146,31 +159,42 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#F8F1E7] p-6 sm:p-8 rounded-3xl border border-[#E0CEB7] shadow-sm">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8C3A4B]">
-            ATELIER OVERVIEW
+            ATELIER OPERATIONS OVERVIEW
           </span>
-          <h1 className="font-serif text-3xl font-medium text-[#6B1E2D]">
+          <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-[#6B1E2D]">
             Dashboard & Real-Time Performance
           </h1>
           <p className="text-xs text-[#8C3A4B] mt-1">
-            Track customer orders, scheduled gift deliveries, and bespoke inquiries across Pakistan.
+            Track customer orders, live catalog inventory, and bespoke concierge inquiries across Pakistan.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href="/admin/orders">
-            <Button variant="default" size="sm" className="text-xs uppercase tracking-wider font-semibold">
-              <ShoppingBag className="h-3.5 w-3.5 mr-1.5" />
-              Manage All Orders
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadDashboardData}
+            disabled={loading}
+            className="text-xs font-semibold gap-1.5 border-[#E0CEB7] text-[#6B1E2D]"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            <span>Refresh</span>
+          </Button>
+
+          <Link href="/admin/products">
+            <Button className="bg-[#6B1E2D] hover:bg-[#822436] text-[#F8F1E7] text-xs font-semibold uppercase tracking-wider gap-1.5 rounded-xl shadow-md">
+              <Plus className="h-3.5 w-3.5 text-[#C5A880]" />
+              <span>Add Product</span>
             </Button>
           </Link>
         </div>
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Gross Revenue */}
         <Card className="bg-[#F8F1E7] border-[#E0CEB7] shadow-xs">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -183,15 +207,33 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="font-serif text-2xl font-bold text-[#6B1E2D]">
-              Rs. {totalRevenuePkr.toLocaleString()} PKR
+              Rs. {totalRevenuePkr.toLocaleString()}
             </div>
             <p className="text-[11px] text-emerald-800 mt-1 flex items-center gap-1 font-medium">
-              <Sparkles className="h-3 w-3" /> Orders across Pakistan
+              <Sparkles className="h-3 w-3" /> Pakistan Gifting Orders
             </p>
           </CardContent>
         </Card>
 
-        {/* Active / In-Studio Orders */}
+        {/* Total Catalog Items */}
+        <Card className="bg-[#F8F1E7] border-[#E0CEB7] shadow-xs">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B]">
+              Live Products
+            </span>
+            <div className="p-2 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
+              <Boxes className="h-4 w-4" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="font-serif text-2xl font-bold text-[#6B1E2D]">
+              {products.length} Items
+            </div>
+            <p className="text-[11px] text-[#8C3A4B] mt-1">Boxes, bouquets & keepsakes</p>
+          </CardContent>
+        </Card>
+
+        {/* Active Orders */}
         <Card className="bg-[#F8F1E7] border-[#E0CEB7] shadow-xs">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B]">
@@ -209,41 +251,74 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Concierge Inquiries */}
+        {/* Active Promos */}
         <Card className="bg-[#F8F1E7] border-[#E0CEB7] shadow-xs">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B]">
-              Client Inquiries
+              Promo Vouchers
             </span>
             <div className="p-2 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
-              <Mail className="h-4 w-4" />
+              <TicketPercent className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="font-serif text-2xl font-bold text-[#6B1E2D]">
-              {inquiriesCount} Inquiries
+              {promos.filter((p) => p.is_active).length} Active
             </div>
-            <p className="text-[11px] text-[#8C3A4B] mt-1">Weddings & bulk corporate</p>
+            <p className="text-[11px] text-[#8C3A4B] mt-1">Discounts ready at checkout</p>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Newsletter Subscribers */}
-        <Card className="bg-[#F8F1E7] border-[#E0CEB7] shadow-xs">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#8C3A4B]">
-              Subscribers
-            </span>
-            <div className="p-2 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
-              <Users className="h-4 w-4" />
+      {/* Quick Atelier Shortcuts */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Link href="/admin/products" className="block">
+          <div className="p-4 rounded-2xl bg-[#F8F1E7] border border-[#E0CEB7] hover:border-[#6B1E2D] transition-colors flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
+              <Boxes className="h-4 w-4" />
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="font-serif text-2xl font-bold text-[#6B1E2D]">
-              {subscribersCount} Clients
+            <div>
+              <span className="text-xs font-bold text-[#6B1E2D] block">Manage Products</span>
+              <span className="text-[10px] text-[#8C3A4B]">Edit catalog & stock</span>
             </div>
-            <p className="text-[11px] text-[#8C3A4B] mt-1">Subscribed for seasonal drops</p>
-          </CardContent>
-        </Card>
+          </div>
+        </Link>
+
+        <Link href="/admin/orders" className="block">
+          <div className="p-4 rounded-2xl bg-[#F8F1E7] border border-[#E0CEB7] hover:border-[#6B1E2D] transition-colors flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
+              <ShoppingBag className="h-4 w-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-[#6B1E2D] block">Order Dispatch</span>
+              <span className="text-[10px] text-[#8C3A4B]">WhatsApp & slips</span>
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/admin/promos" className="block">
+          <div className="p-4 rounded-2xl bg-[#F8F1E7] border border-[#E0CEB7] hover:border-[#6B1E2D] transition-colors flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
+              <TicketPercent className="h-4 w-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-[#6B1E2D] block">Promo Codes</span>
+              <span className="text-[10px] text-[#8C3A4B]">Campaign discounts</span>
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/admin/settings" className="block">
+          <div className="p-4 rounded-2xl bg-[#F8F1E7] border border-[#E0CEB7] hover:border-[#6B1E2D] transition-colors flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-[#E8D8C3] text-[#6B1E2D]">
+              <Settings className="h-4 w-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-[#6B1E2D] block">Store Settings</span>
+              <span className="text-[10px] text-[#8C3A4B]">Delivery & contacts</span>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Main Table: Recent Gifting Orders */}

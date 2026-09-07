@@ -47,6 +47,7 @@ import {
   FlowerStem,
 } from "@/lib/catalog-data";
 import { saveCart } from "@/lib/customer-storage";
+import { fetchProducts, Product } from "@/lib/products-storage";
 
 type MainTab = "box" | "bouquet" | "browse";
 
@@ -157,55 +158,121 @@ function CatalogContent() {
     }, 0);
 
   // ============================================================
-  // 3. CATALOG BROWSE STATE
+  // 3. CATALOG BROWSE STATE & DYNAMIC PRODUCTS
   // ============================================================
+  const [liveProducts, setLiveProducts] = useState<Product[]>([]);
   const [browseCategory, setBrowseCategory] = useState<FilterCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
 
-  const filteredCollections = useMemo(() => {
-    return SIGNATURE_COLLECTIONS.filter((col) => {
-      const matchesSearch =
-        col.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        col.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        col.tag.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    async function loadDynamicCatalog() {
+      const prods = await fetchProducts();
+      setLiveProducts(prods);
+    }
+    loadDynamicCatalog();
+  }, []);
 
-      if (!matchesSearch) return false;
-      if (browseCategory === "all") return true;
-      if (browseCategory === "signature-boxes") return col.category === "box";
-      if (browseCategory === "signature-bouquets") return col.category === "bouquet";
-      return false;
-    }).sort((a, b) => {
-      if (sortBy === "price-asc") return a.pricePkr - b.pricePkr;
-      if (sortBy === "price-desc") return b.pricePkr - a.pricePkr;
-      return 0;
-    });
-  }, [browseCategory, searchQuery, sortBy]);
+  const allCollections = useMemo(() => {
+    const list = [...SIGNATURE_COLLECTIONS];
+    // Include custom added boxes and bouquets
+    const customProds = liveProducts.filter(
+      (p) =>
+        (p.type === "box" || p.type === "bouquet") &&
+        !list.some((c) => c.id === p.id)
+    );
+    for (const p of customProds) {
+      list.push({
+        id: p.id,
+        title: p.name,
+        type: p.type === "box" ? "Bespoke Gift Box" : "Handcrafted Bouquet",
+        category: p.type as "box" | "bouquet",
+        pricePkr: p.price_pkr,
+        tag: p.badge || (p.type === "box" ? "Bespoke Gift Box" : "Signature Floral"),
+        itemsCount: `${p.inclusions?.length || 1} Curated Items`,
+        includes: p.inclusions && p.inclusions.length > 0 ? p.inclusions : [p.name],
+        bgAccent:
+          p.type === "box"
+            ? "from-[#6B1E2D]/15 to-[#E8D8C3]/40"
+            : "from-[#F8F1E7] to-[#E8D8C3]/70",
+        description: p.description,
+      });
+    }
+    return list;
+  }, [liveProducts]);
+
+  const allBoxItems = useMemo(() => {
+    const list = [...SAMPLE_BOX_ITEMS];
+    const customItems = liveProducts.filter(
+      (p) => p.type === "item" && !list.some((i) => i.id === p.id)
+    );
+    for (const p of customItems) {
+      let cat = "Coffee Cup & Snacks" as CustomBoxItem["category"];
+      const lowerCat = p.category.toLowerCase();
+      if (lowerCat.includes("jewelry")) cat = "Jewelry";
+      else if (lowerCat.includes("crochet")) cat = "Crochet";
+      else if (lowerCat.includes("makeup")) cat = "Makeup";
+      else if (lowerCat.includes("candle")) cat = "Scented Candle";
+
+      list.push({
+        id: p.id,
+        name: p.name,
+        category: cat,
+        pricePkr: p.price_pkr,
+        tag: p.badge || "Artisanal",
+        description: p.description,
+      });
+    }
+    return list;
+  }, [liveProducts]);
+
+  const filteredCollections = useMemo(() => {
+    return allCollections
+      .filter((col) => {
+        const matchesSearch =
+          col.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          col.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          col.tag.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (!matchesSearch) return false;
+        if (browseCategory === "all") return true;
+        if (browseCategory === "signature-boxes") return col.category === "box";
+        if (browseCategory === "signature-bouquets") return col.category === "bouquet";
+        return false;
+      })
+      .sort((a, b) => {
+        if (sortBy === "price-asc") return a.pricePkr - b.pricePkr;
+        if (sortBy === "price-desc") return b.pricePkr - a.pricePkr;
+        return 0;
+      });
+  }, [allCollections, browseCategory, searchQuery, sortBy]);
 
   const filteredBoxItems = useMemo(() => {
-    return SAMPLE_BOX_ITEMS.filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.tag.toLowerCase().includes(searchQuery.toLowerCase());
+    return allBoxItems
+      .filter((item) => {
+        const matchesSearch =
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.tag.toLowerCase().includes(searchQuery.toLowerCase());
 
-      if (!matchesSearch) return false;
-      if (browseCategory === "all") return true;
-      if (browseCategory === "jewelry") return item.category === "Jewelry";
-      if (browseCategory === "makeup") return item.category === "Makeup";
-      if (browseCategory === "crochet") return item.category === "Crochet";
-      if (browseCategory === "treats-candles") {
-        return (
-          item.category === "Coffee Cup & Snacks" || item.category === "Scented Candle"
-        );
-      }
-      return false;
-    }).sort((a, b) => {
-      if (sortBy === "price-asc") return a.pricePkr - b.pricePkr;
-      if (sortBy === "price-desc") return b.pricePkr - a.pricePkr;
-      return 0;
-    });
-  }, [browseCategory, searchQuery, sortBy]);
+        if (!matchesSearch) return false;
+        if (browseCategory === "all") return true;
+        if (browseCategory === "jewelry") return item.category === "Jewelry";
+        if (browseCategory === "makeup") return item.category === "Makeup";
+        if (browseCategory === "crochet") return item.category === "Crochet";
+        if (browseCategory === "treats-candles") {
+          return (
+            item.category === "Coffee Cup & Snacks" || item.category === "Scented Candle"
+          );
+        }
+        return false;
+      })
+      .sort((a, b) => {
+        if (sortBy === "price-asc") return a.pricePkr - b.pricePkr;
+        if (sortBy === "price-desc") return b.pricePkr - a.pricePkr;
+        return 0;
+      });
+  }, [allBoxItems, browseCategory, searchQuery, sortBy]);
 
   const showCollections =
     browseCategory === "all" ||

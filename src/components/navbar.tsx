@@ -16,10 +16,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/client";
+import { fetchStoreSettings, StoreSettings, DEFAULT_STORE_SETTINGS } from "@/lib/products-storage";
 
 export function Navbar() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [storeSettings, setStoreSettings] = useState<StoreSettings>(DEFAULT_STORE_SETTINGS);
   const profileRef = useRef<HTMLDivElement>(null);
 
   const supabase = createClient();
@@ -34,14 +36,21 @@ export function Navbar() {
     }
     loadUser();
 
-    // 2. Real-time auth listener
+    // 2. Load Store Settings for dynamic announcement
+    async function loadSettings() {
+      const s = await fetchStoreSettings();
+      setStoreSettings(s);
+    }
+    loadSettings();
+
+    // 3. Real-time auth listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
     });
 
-    // 3. Click outside handler to close dropdown
+    // 4. Click outside handler to close dropdown
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
@@ -72,11 +81,12 @@ export function Navbar() {
   return (
     <>
       {/* Top Luxury Announcement Bar */}
-      <div className="bg-[#6B1E2D] text-[#F8F1E7] px-4 py-2 text-xs font-medium tracking-widest text-center uppercase flex items-center justify-center gap-2 border-b border-[#501521]">
-        <Sparkles className="h-3.5 w-3.5 text-[#C5A880]" />
-        <span>Complimentary Handwritten Calligraphy & Wax-Sealed Card on orders over Rs. 5,000</span>
-        <span className="hidden md:inline">• Same-Day Hand Delivery in Lahore, Karachi & Islamabad</span>
-      </div>
+      {storeSettings.announcement_banner && (
+        <div className="bg-[#6B1E2D] text-[#F8F1E7] px-4 py-2 text-xs font-medium tracking-wider text-center flex items-center justify-center gap-2 border-b border-[#501521]">
+          <Sparkles className="h-3.5 w-3.5 text-[#C5A880] shrink-0" />
+          <span>{storeSettings.announcement_banner}</span>
+        </div>
+      )}
 
       {/* Main Navigation Header */}
       <header className="sticky top-0 z-40 bg-[#F3E7D3]/95 backdrop-blur-md border-b border-[#E0CEB7]">

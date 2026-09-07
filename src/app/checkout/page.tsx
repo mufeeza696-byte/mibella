@@ -40,6 +40,15 @@ import {
   CartItem,
   CustomerProfile,
 } from "@/lib/customer-storage";
+import {
+  fetchPromoCodes,
+  validatePromoCode,
+  fetchStoreSettings,
+  PromoCode,
+  StoreSettings,
+  DEFAULT_STORE_SETTINGS,
+} from "@/lib/products-storage";
+import { TicketPercent, Tag } from "lucide-react";
 
 type PaymentMethod = "cod" | "jazzcash_easypaisa" | "bank_transfer" | "card";
 
@@ -53,6 +62,14 @@ function CheckoutContent() {
 
   // Cart State
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // Promo Code State
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [storeSettings, setStoreSettings] = useState<StoreSettings>(DEFAULT_STORE_SETTINGS);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<PromoCode | null>(null);
+  const [promoDiscountPkr, setPromoDiscountPkr] = useState(0);
+  const [promoFeedback, setPromoFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   // Customer Form State
   const [customerName, setCustomerName] = useState("");
@@ -126,6 +143,14 @@ function CheckoutContent() {
       setCartItems([fallbackItem]);
       setRecipientName("Ayesha");
     }
+
+    // 4. Load Promos & Settings
+    async function loadPromosAndSettings() {
+      const [pCodes, sSettings] = await Promise.all([fetchPromoCodes(), fetchStoreSettings()]);
+      setPromoCodes(pCodes);
+      setStoreSettings(sSettings);
+    }
+    loadPromosAndSettings();
   }, [supabase]);
 
   // Handle Clearing Remembered Customer
@@ -143,8 +168,32 @@ function CheckoutContent() {
     (acc, item) => acc + item.pricePkr * (item.quantity || 1),
     0
   );
-  const shippingFeePkr = subtotalPkr >= 5000 ? 0 : 350;
-  const grandTotalPkr = subtotalPkr + shippingFeePkr;
+  const freeThreshold = storeSettings?.free_shipping_threshold_pkr || 5000;
+  const standardShipping = storeSettings?.shipping_fee_pkr || 350;
+  const shippingFeePkr = subtotalPkr >= freeThreshold ? 0 : standardShipping;
+  const grandTotalPkr = Math.max(0, subtotalPkr - promoDiscountPkr + shippingFeePkr);
+
+  // Promo Code Handlers
+  const handleApplyPromo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!promoInput.trim()) return;
+
+    const res = validatePromoCode(promoInput, subtotalPkr, promoCodes);
+    if (res.valid) {
+      setAppliedPromo(res.promo || null);
+      setPromoDiscountPkr(res.discountPkr);
+      setPromoFeedback({ type: "success", message: res.message });
+      setPromoInput("");
+    } else {
+      setPromoFeedback({ type: "error", message: res.message });
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoDiscountPkr(0);
+    setPromoFeedback(null);
+  };
 
   // Handle Order Placement
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -280,6 +329,12 @@ function CheckoutContent() {
                   {orderConfirmed.paymentMethod.replace("_", " ")}
                 </span>
               </div>
+              {orderConfirmed.promoCode && (
+                <div className="flex justify-between items-center text-xs text-emerald-800 font-semibold">
+                  <span>Voucher Applied ({orderConfirmed.promoCode}):</span>
+                  <span>-Rs. {orderConfirmed.discountPkr?.toLocaleString()} PKR</span>
+                </div>
+              )}
               <div className="flex justify-between items-center pt-3 border-t border-[#E0CEB7] text-sm font-bold">
                 <span>Total Amount:</span>
                 <span className="text-[#6B1E2D]">
@@ -291,8 +346,8 @@ function CheckoutContent() {
             {/* WhatsApp Concierge Assistance CTA */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href={`https://wa.me/923000000000?text=${encodeURIComponent(
-                  `Hello Mibella, I just placed order ${orderConfirmed.orderId} for Rs. ${orderConfirmed.grandTotalPkr.toLocaleString()} PKR to ${orderConfirmed.deliveryCity}.`
+                href={`https://wa.me/${(storeSettings.whatsapp_number || "+923001234567").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+                  `Hello MIBELLA Atelier, I just placed order ${orderConfirmed.orderId} for Rs. ${orderConfirmed.grandTotalPkr.toLocaleString()} PKR to ${orderConfirmed.deliveryCity}.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -727,18 +782,84 @@ function CheckoutContent() {
                 ))}
               </div>
 
+              {/* Promo Voucher Code */}
+              <div className="pt-3 border-t border-[#E0CEB7]/70 space-y-2">
+                <label className="text-[11px] font-bold uppercase tracking-wider text-[#6B1E2D] flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <TicketPercent className="h-3.5 w-3.5 text-[#C5A880]" />
+                    <span>Have a Promo Code?</span>
+                  </span>
+                  {appliedPromo && (
+                    <button
+                      type="button"
+                      onClick={handleRemovePromo}
+                      className="text-[10px] text-red-700 hover:underline uppercase font-bold cursor-pointer"
+                    >
+                      Remove Code
+                    </button>
+                  )}
+                </label>
+
+                {appliedPromo ? (
+                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-between text-xs text-emerald-900">
+                    <span className="font-semibold">
+                      ✓ {appliedPromo.code} Applied: Saved Rs. {promoDiscountPkr.toLocaleString()}
+                    </span>
+                    <Badge variant="outline" className="text-[10px] bg-white border-emerald-400 text-emerald-800">
+                      Active
+                    </Badge>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      placeholder="e.g. MIBELLA10"
+                      value={promoInput}
+                      onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                      className="bg-white/80 uppercase text-xs h-9 font-mono tracking-wider"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleApplyPromo}
+                      className="text-xs font-semibold uppercase px-4 border-[#C5A880] text-[#6B1E2D] hover:bg-[#E8D8C3]"
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                )}
+
+                {promoFeedback && !appliedPromo && (
+                  <p className="text-[11px] text-red-700 font-medium">
+                    {promoFeedback.message}
+                  </p>
+                )}
+              </div>
+
               {/* Price Calculation Breakdown */}
-              <div className="pt-4 border-t border-[#E0CEB7] space-y-2 text-xs text-[#8C3A4B]">
+              <div className="pt-3 border-t border-[#E0CEB7] space-y-2 text-xs text-[#8C3A4B]">
                 <div className="flex justify-between">
                   <span>Item Subtotal:</span>
                   <span>Rs. {subtotalPkr.toLocaleString()} PKR</span>
                 </div>
+
+                {appliedPromo && (
+                  <div className="flex justify-between text-emerald-800 font-semibold">
+                    <span>Discount ({appliedPromo.code}):</span>
+                    <span>-Rs. {promoDiscountPkr.toLocaleString()} PKR</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center">
                   <span>Delivery to {deliveryCity}:</span>
                   <span className={shippingFeePkr === 0 ? "text-emerald-700 font-semibold" : ""}>
-                    {shippingFeePkr === 0 ? "FREE (Orders over Rs. 5,000)" : "Rs. 350 PKR"}
+                    {shippingFeePkr === 0
+                      ? `FREE (Orders over Rs. ${freeThreshold.toLocaleString()})`
+                      : `Rs. ${standardShipping} PKR`}
                   </span>
                 </div>
+
                 <div className="flex justify-between text-base font-bold text-[#6B1E2D] pt-2 border-t border-[#E0CEB7]/70">
                   <span>Grand Total:</span>
                   <span>Rs. {grandTotalPkr.toLocaleString()} PKR</span>
